@@ -92,7 +92,7 @@ class Commands(commands.Cog):
 
         embed = discord.Embed(
             title='Blocked Images!',
-            description='\n'.join(f'{idx}. {url}' for idx, url in enumerate(urls)),
+            description='\n'.join(f'{idx+1}. {url}' for idx, url in enumerate(urls)),
             colour=discord.Colour.blurple(),
             timestamp=datetime.datetime.now()
         )

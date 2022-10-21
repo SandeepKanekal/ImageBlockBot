@@ -30,9 +30,12 @@ class Events(commands.Cog):
             os.remove(f'images/image_{message.id}.png')
         
         with open('images.json', 'r') as f:
-            forbidden_images = json.load(f)[str(message.guild.id)]
-                
-        for h, image in zip(hashes, forbidden_images):
+            forbidden_images = json.load(f)
+        
+        if str(message.guild.id) not in forbidden_images:
+            return
+                                
+        for h, image in zip(hashes, forbidden_images[str(message.guild.id)][0].values()):
             if h - imagehash.ImageHash(np.asarray(image)) < 5:
                 await message.delete()
                 return
