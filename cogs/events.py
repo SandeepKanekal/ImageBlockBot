@@ -3,7 +3,7 @@ import imagehash
 import os
 import json
 import numpy as np
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from discord.ext import commands
 
 
@@ -26,7 +26,10 @@ class Events(commands.Cog):
         hashes: list[imagehash.ImageHash] = []
         for attachment in message.attachments:
             await attachment.save(f'images/image_{message.id}.png')
-            hashes.append(imagehash.average_hash(Image.open(f'images/image_{message.id}.png')))
+            try:
+                hashes.append(imagehash.average_hash(Image.open(f'images/image_{message.id}.png')))
+            except UnidentifiedImageError:
+                return
             os.remove(f'images/image_{message.id}.png')
         
         with open('images.json', 'r') as f:
