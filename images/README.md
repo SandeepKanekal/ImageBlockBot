@@ -1,0 +1,1 @@
+# This folder is to store images temporarily to read the hash and record it!
