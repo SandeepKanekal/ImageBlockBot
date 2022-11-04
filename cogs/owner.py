@@ -15,6 +15,15 @@ class Owner(commands.Cog):
     @reload.error
     async def reload_error(self, ctx: commands.Context, error: commands.CommandError):
         await ctx.reply(str(error))
+    
+    @commands.command(name='data')
+    @commands.is_owner()
+    async def data(self, ctx: commands.Context):
+        await ctx.reply(file=discord.File('images.json'))
+    
+    @data.error
+    async def data_error(self, ctx: commands.Context, error: commands.CommandError):
+        await ctx.reply(str(error))
 
 
 def setup(bot: commands.Bot):

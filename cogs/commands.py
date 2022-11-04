@@ -61,12 +61,14 @@ class Commands(commands.Cog):
             with open('images.json', 'r') as f:
                 data = json.load(f)
             
-            with contextlib.suppress(KeyError):
-                if url not in data[str(ctx.guild.id)][0]:
-                    await ctx.reply('This image is not blocked!')
-                    return
+            if url not in data[str(ctx.guild.id)][0]:
+                await ctx.reply('This image is not blocked!')
+                return
             
             del data[str(ctx.guild.id)][0][url]
+            
+            if len(data[str(ctx.guild.id)]) == 1 and not data[str(ctx.guild.id)][0]:
+                del data[str(ctx.guild.id)]
 
             with open("images.json", "w") as f:
                 json.dump(data, f, indent=3)
@@ -81,6 +83,9 @@ class Commands(commands.Cog):
         elif isinstance(error, UnidentifiedImageError):
             await ctx.reply("Invalid URL Provided")
             os.remove(f'images/image_{ctx.message.id}.png')
+        
+        elif isinstance(error, commands.CommandInvokeError) and isinstance(error.original, KeyError):
+            await ctx.reply('This image is not blocked!')
         
         else:
             await ctx.reply(str(error))
@@ -104,6 +109,10 @@ class Commands(commands.Cog):
 
     @list_images.error
     async def list_images_error(self, ctx: commands.Context, error: commands.CommandError):
+        if isinstance(error, commands.CommandInvokeError) and isinstance(error.original, KeyError):
+            await ctx.reply('No images added!')
+            return
+        
         await ctx.reply(str(error))
 
 
